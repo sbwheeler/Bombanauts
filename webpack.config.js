@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-var webpack = require('webpack');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './browser/react/index.js',
@@ -15,12 +15,12 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx', '.scss']
   },
-  // plugins: [
-  //       new webpack.ProvidePlugin({
-  //           $: "jquery",
-  //           jQuery: "jquery"
-  //       })
-  //   ],
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: false,
+      mangle: false
+    })
+  ],
   module: {
     loaders: [
       {
@@ -35,7 +35,16 @@ module.exports = {
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)(\?.*$|$)/,
         loader: 'file'
+      },
+      {
+            // I want to uglify with mangling only app files, not thirdparty libs
+            test: /.*\/App\/.*\.js$/,
+            exclude: /.test.js/, // excluding .test files
+            loader: "uglify"
       }
     ]
+  },
+  stats: {
+    warnings: false
   }
 };
